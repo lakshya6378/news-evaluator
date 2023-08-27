@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {Link} from "react-router-dom";
 import './Login.scss'; // Import the Sass file
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import { Authcontext } from '../context/Authcontext';
 function Login() {
     const [values,setvalues]=useState({
         email:'',
         password:''
       })
       const navigate=useNavigate();
+      const {login,currentUser}=useContext(Authcontext);
+      console.log(currentUser);
       axios.defaults.withCredentials=true;
-      const handlesubmit=(event)=>{
+      const handlesubmit= async (event)=>{
         event.preventDefault();
         console.log(values);
-        axios.post('http://localhost:8080/login',values)
-        .then(res=>{
-          if(res.data.Status==="Success"){
-               navigate('/')
-          }else {
+      
+        try {
+          const res = await login(values);
+          if (res.data.Status === "Success") {
+            console.log(res.data.Data)
+            navigate('/');
+          } else {
             alert(res.data.Error);
           }
-        })
-        .then(err=>console.log(err))
+        } catch (error) {
+          console.log(error);
+        }
       }
 
     return (

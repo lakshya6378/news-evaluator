@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import cookieParser from "cookie-parser";
 
+
+
+
 const salt=10;
 const app=express();
 app.use(cors({
@@ -14,7 +17,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser())
+
+app.use(express.urlencoded({extended: false}))
+app.use('/img', express.static('storage'))
+
 const port=8080;
+
 const db=mysql.createConnection({
     host:"localhost",
     user:"root",
@@ -72,10 +80,10 @@ app.post('/login',(req,res)=>{
             if(response){
                 const name=data[0].name;
                 const token=jwt.sign({name},"jwt-secret-key",{expiresIn:'1d'});
+                const {password,...other}=data[0];
                 res.cookie('token',token);
                  
-
-                return res.json({Status:"Success"})
+                return res.json({Status:"Success",Data:other})
             }
             else {
                 return res.json({Error:"password not matched"})
@@ -92,6 +100,8 @@ app.get('/logout',(req,res)=>{
     res.clearCookie('token');
     return res.json({Status:"Success"});
 })
+
+
 app.listen(port,()=>{
     console.log("server is running at https//localhost:8080");
 })

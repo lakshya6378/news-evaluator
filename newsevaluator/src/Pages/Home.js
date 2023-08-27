@@ -1,12 +1,15 @@
-import React,{useEffect,useState} from 'react'
+import React,{useContext, useEffect,useState} from 'react'
 import { Link,useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { Authcontext } from '../context/Authcontext';
+import Fileuploader from '../components/Fileuploader';
 function Home() {
   const [auth,setauth]=useState(false);
     const [message,setmessage]=useState('');
     const [name,setname]=useState('');
     axios.defaults.withCredentials=true;
     const navigate=useNavigate();
+    const {logout}=useContext(Authcontext)
     useEffect(()=>{
         axios.get('http://localhost:8080')
         .then(res=>{
@@ -36,7 +39,7 @@ function Home() {
             auth ?
             <div>
                 <h3>You are authorized  {name}</h3>
-                <button onClick={handleDelete}>Logout</button>
+                <button onClick={logout}>Logout</button>
             </div>
             :
             <div>
@@ -45,6 +48,7 @@ function Home() {
                 <Link to='/login'>Login</Link>
             </div>
         }
+        <Fileuploader/>
     </div>
   )
 }
