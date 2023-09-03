@@ -1,0 +1,39 @@
+.Ocr{
+    border:2px solid red;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:2rem;
+    .input{
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border:2px solid red;
+        position: relative;
+        overflow: hidden;
+    }
+.file{
+    border:2px solid red;
+    position: absolute;
+    z-index: -1;
+    top: 80px;
+    left: 10px;
+    
+    color: #b8b8b8;
+
+}
+.button{
+    display: inline-block;
+        padding: 12px 30px;
+        cursor: pointer;
+        border-radius: 5px;
+        background-color: #4b52cf;
+        font-size: 32px;
+        font-weight: bold;
+        color: #ffffff;
+        text-transform: uppercase;
+}
+
+}

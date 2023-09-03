@@ -52,7 +52,7 @@ function Login() {
                 />
                 <button type='submit' className='button'>Login</button>
                 <p>This is an error message</p>
-                <span>Don't have an account? <Link to='/register'>Register</Link></span>
+                <span>Don&apos;t have an account? <Link to='/register'>Register</Link></span>
             </form>
             
         </div>

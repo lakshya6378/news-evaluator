@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Dictionary from './Dictionary';
-
+import {Heading} from '@chakra-ui/react';
+import './Fileuploader.scss'
 function Fileuploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataUrl, setDataUrl] = useState(null);
@@ -8,8 +9,9 @@ function Fileuploader() {
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    console.log("selectedfile="+selectedFile);
   };
-
+console.log(selectedFile);
   const PerformOcr=()=>{
     if(selectedFile)
     {
@@ -19,7 +21,9 @@ function Fileuploader() {
      fr.onload=async ()=>{
       const res=fr.result;
       setDataUrl(res);
+      console.log(dataUrl);
       let b64=res.split("base64,")[1];
+      console.log("base64 url "+b64);
       await fetch(api,{
         method:"POST",
         body:JSON.stringify({
@@ -39,14 +43,22 @@ function Fileuploader() {
   }
   return (
     
-    <div className='Ocr'>
-      <span>Select a file</span>
-      <input type='file' className='file' onChange={handleFileChange}></input>
+    <div  
+    className='Ocr' >
+      <Heading>Select a file</Heading>
+      <div className='input'>
+        <label htmlFor='file' className='button'>Choose File</label>
+        <input 
+    
+        type='file'   
+        className='file' 
+        id='file'
+        onChange={handleFileChange}  
+        />
+        </div>
       <button className='btn' onClick={PerformOcr}>Perform ocr</button>
       <span>result</span>
-      {/* <Dictionary data={data}></Dictionary> */}
-      <div>{data}</div>
-
+      <Dictionary data={data}></Dictionary>
     </div>
   )
 }

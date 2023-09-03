@@ -1,0 +1,26 @@
+.custom-tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+  
+  .custom-tooltip h2 {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .custom-tooltip button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  .content-container{
+    line-height: 25px;
+  }
+  .interactive-word{
+    border: 1px solid black;
+    padding:2px;
+  }

@@ -4,7 +4,7 @@ import cors from "cors"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import cookieParser from "cookie-parser";
-
+import axios from "axios";
 
 
 
@@ -100,6 +100,23 @@ app.get('/logout',(req,res)=>{
     res.clearCookie('token');
     return res.json({Status:"Success"});
 })
+app.get('/description',async (req,res)=>{
+    const word=req.query.word;                                  
+    const url=`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+    console.log(word);
+    try{
+        const response=await axios.get(url);
+        const data=response.data;
+        console.log(data);
+        return res.json(data);
+        
+    }
+    catch(error){
+        res.json(error);
+    }
+
+})
+
 
 
 app.listen(port,()=>{
