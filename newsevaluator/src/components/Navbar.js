@@ -18,7 +18,6 @@ import {
   Stack,
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
-//import { Authcontext } from '../context/Authcontext';
 import axios from 'axios';
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -54,8 +53,6 @@ function Navbar() {
         if(res.data.Status==="Success"){
           setauth(true)
           setname(res.data.name);
-             
-
         }else {
           setauth(false)
           //setmessage(res.data.Error)

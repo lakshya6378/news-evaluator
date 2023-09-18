@@ -3,17 +3,15 @@
         {
             "mysqlOptions": {
                 "authProtocol": "default",
-                "enableSsl": "Disabled",
-                "ssl": {}
+                "enableSsl": "Disabled"
             },
             "previewLimit": 50,
-            "server": "signup.cdgevw5j63lp.ap-south-1.rds.amazonaws.com",
-            "port": 3306,
+            "server": "localhost",
+            "port": 8080,
             "driver": "MySQL",
-            "name": "lakshya",
             "database": "signup",
             "username": "root",
-            "askForPassword": true
+            "name": "lakshya"
         }
     ]
 }
