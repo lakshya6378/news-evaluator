@@ -10,7 +10,7 @@ import axios from "axios";
 const salt=10;
 const app=express();
 app.use(cors({
-    origin:'http://localhost:3000',
+    origin:'https://news-ai-front.onrender.com',
     methods:["POST","GET"],
     credentials:true
 }));
