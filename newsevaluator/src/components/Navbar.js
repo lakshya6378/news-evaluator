@@ -49,7 +49,7 @@ function Navbar() {
     axios.defaults.withCredentials=true;
     const {logout}=useContext(Authcontext)
     useEffect(()=>{
-      axios.get('http://localhost:8080')
+      axios.get(`${process.env.REACT_APP_BACKEND_URL}`)
       .then(res=>{
         if(res.data.Status==="Success"){
           setauth(true)
