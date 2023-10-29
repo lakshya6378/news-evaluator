@@ -41,7 +41,7 @@ console.log(selectedFile);
                 fileurl:url,
                 uid:currentUser.id
               }
-                axios.post("http://localhost:8080/filedetails",filedetail)
+                axios.post(`${process.env.REACT_APP_BACKEND_URL}/filedetails`,filedetail)
                 .then((res)=>{
                   if(res.data.Status==="Success")
                   alert("data uploaded successfully");

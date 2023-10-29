@@ -17,7 +17,7 @@ function Dictionary({ data }) {
 
   const fetchMeaning = async (word) => {
     try {
-      const response = await axios.get(`http://localhost:8080/description`, { params: { word: word } });
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/description`, { params: { word: word } });
       return response.data[0]; // Assuming the API response provides the definition
     } catch (error) {
       console.error(error);

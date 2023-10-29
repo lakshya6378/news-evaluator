@@ -13,7 +13,7 @@ function Register() {
     const handlesubmit=(event)=>{
       event.preventDefault();
       console.log(values);
-      axios.post('http://localhost:8080/register',values)
+      axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`,values)
       .then(res=>{
         if(res.data.Status==="Success"){
              navigate('/login')

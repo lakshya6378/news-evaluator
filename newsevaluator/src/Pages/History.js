@@ -11,7 +11,7 @@ function History() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/history?id=${currentUser.id}`);
+        const response = await axios.get(`https://news-ai-55j2.onrender.com/history?id=${currentUser.id}`);
         if (response.data.Status === "Success") {
           setHistory(response.data.data);
         }
