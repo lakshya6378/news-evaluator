@@ -30,7 +30,7 @@ const db=mysql.createConnection({
 })
 
 const db2=mysql.createConnection({
-    host:"database-1.cdgevw5j63lp.ap-south-1.rds.amazonaws.com",
+    host:"newsai.cczedsjmh0ei.ap-south-1.rds.amazonaws.com",
     user:"root",
     password:"lakshya1234",
     database:'signup'
@@ -144,7 +144,32 @@ app.get('/description',async (req,res)=>{
     }
 })
 
+app.post('/filedetails', async (req, res) => {
+    const { filename, fileurl, uid } = req.body;
+  
+    const query = "INSERT INTO uploaddetail (filename, uid, fileurl) VALUES (?, ?, ?)";
+    const values = [filename, uid, fileurl];
+  
+    db2.query(query, values, (err, result) => {
+      if (err) {
+        return res.json({ Status: "Error", Error: "Data inserting error" });
+      }
+      return res.json({ Status: "Success" });
+    });
+  });
 
+  app.get('/history',async (req,res)=>{
+    const id = req.query.id;
+    const query="SELECT filename,fileurl from uploaddetail where uploaddetail.uid=?";
+    db2.query(query,[id],(err,result)=>{
+        if(err){
+            return res.json({ Status: "Error", Error: "Unable to fetch history please try again" });
+        }
+        console.log(result.length)
+            return res.json({Status:"Success",data:result});
+        
+    })
+  })
 app.listen(port,()=>{
     console.log("server is running at https//localhost:8080");
 })

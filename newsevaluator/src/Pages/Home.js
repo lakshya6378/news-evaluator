@@ -4,6 +4,8 @@ import React,{/*useContext, useEffect,useState*/} from 'react'
 // import { Authcontext } from '../context/Authcontext';
 import Fileuploader from '../components/Fileuploader';
 import Navbar from '../components/Navbar';
+import Instructions from '../components/Instructions';
+import Tutorials from '../components/Tutorials';
 function Home() {
   // const [auth,setauth]=useState(false);
   //    const [message,setmessage]=useState('');
@@ -43,6 +45,8 @@ function Home() {
             </div>
         } */}
         <Fileuploader/>
+        <Instructions/>
+        <Tutorials/>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import './Fileuploader.scss';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import {storage} from '../firebase';
 import { Authcontext } from '../context/Authcontext';
+import axios from 'axios';
 function Fileuploader() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [dataUrl, setDataUrl] = useState(null);
@@ -25,16 +26,31 @@ console.log(selectedFile);
       setloading(true);
       if(currentUser)
       {
-          const storageRef=ref(storage,`/files/${selectedFile.name}`);
+        const date=new Date().getTime();
+          const storageRef=ref(storage,`/files/${selectedFile.name}${date}`);
           const uploadTask=uploadBytesResumable(storageRef,selectedFile);
           uploadTask.on("state_changed",(snapshot)=>{
             const prog=Math.round(snapshot.bytesTransferred/snapshot.totalBytes)*100;
             setprogress(prog);
-          },(err)=>console.log(err)),
+          },(err)=>console.log(err),
           ()=>{
             getDownloadURL(uploadTask.snapshot.ref)
-            .then(url=>console.log(url));
-          }
+            .then((url)=>{
+              const filedetail={
+                filename:selectedFile.name,
+                fileurl:url,
+                uid:currentUser.id
+              }
+                axios.post("http://localhost:8080/filedetails",filedetail)
+                .then((res)=>{
+                  if(res.data.Status==="Success")
+                  alert("data uploaded successfully");
+                else
+                alert("error");
+                })
+                .catch((err)=>alert(err))
+            });
+          })
       }
       let api="https://script.google.com/macros/s/AKfycbxTxk77TVNhMYcv1trBCwILLwVjeupZp2F6zqiBBfosF2CTPJ0PnwqhfU1hQuGvccRrxQ/exec";
      let fr=new FileReader();
@@ -101,7 +117,7 @@ console.log(selectedFile);
     className='Ocr' >
       <div className='headercontainer'>
         <img className='titleLogo' src=""></img>
-      <Heading className="heading">AI NEWS GENRATOR</Heading>
+      <Heading  className="heading">AI NEWS GENRATOR</Heading>
       <p>Upload your article as Image or PDF for generate AI news</p>
       {
           selectedFile&&<div className='filename'>Selected file:{selectedFile.name}</div>
@@ -121,13 +137,20 @@ console.log(selectedFile);
         </div>
         </div>
   
-      <button className='btn' onClick={PerformOcr}>Perform ocr</button>
+      <button className='btn' onClick={PerformOcr}>Create News</button>
      
     </div>
     }
      {
         loading&&<>
-      <span>loading...</span>
+        <div className='animationcontainer'>
+      <svg className='svg'>
+        <circle cx="70" cy="70" r="70">
+
+        
+        </circle>
+        </svg>
+        </div>
       <div>uploaded {progress}%</div>
       </>
 }
@@ -140,7 +163,7 @@ console.log(selectedFile);
       <Dictionary data={data}></Dictionary>
   </>
 }
-    
+    <div className='color-line'></div>
     </>
   )
 }

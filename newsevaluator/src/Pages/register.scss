@@ -1,13 +1,29 @@
+.container-register
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100vh;
+  background:linear-gradient(#108dc7,#ef8e38);
+}
+
+
 .register-page{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height:100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width:300px;
+  background-color: transparent;
+  border:1px solid black;
+  border-radius: 5%;
+  padding:2%;
+  box-shadow: 2px 2px 5px 5px ;
     h1{
-      font-size: 20px;
-      color: teal;
-      margin-bottom: 20px;
+      font-size: 30px;
+    color: rgb(135, 31, 31);
+    font-weight: bolder;
+    margin-bottom: 20px;
     }
     form{
       display: flex;
@@ -21,6 +37,7 @@
       padding:20px;
       border:none;
       border-bottom: 1px solid gray;
+      border-radius: 10px;
     }
   
     button{
@@ -32,11 +49,15 @@
   
     }
     span{
-      font-size: 12px;
+      font-size: 15px;
       text-align: center;
     }
     p{
       font-size: 12px;
       color: red;
     }
-}  
+} 
+.loginnav:hover{
+  font-size: 20px;
+  color:rgb(0, 128, 9);
+} 

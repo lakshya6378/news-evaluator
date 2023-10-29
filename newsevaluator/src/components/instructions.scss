@@ -1,0 +1,23 @@
+.numbered-circle-list {
+    list-style-type: none; /* Remove default list style */
+    padding: 0;
+    counter-reset: item 0; /* Reset the counter to 0 before the list */
+}
+
+.numbered-circle-list .listitems {
+    margin-bottom: 10px; /* Add spacing between list items */
+}
+
+.numbered-circle-list .listitems::before {
+    content: counter(item); /* Add the counter value with a space */
+    counter-increment: item; /* Increment the counter by 1 for each item */
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid #000;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 1.6em;
+    margin-right: 0.5em;
+    font-weight: bold;
+}

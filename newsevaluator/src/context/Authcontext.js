@@ -7,6 +7,7 @@ export const AuthContextProvider=({children})=>{
     const [currentUser,setCurrentUser]=useState(JSON.parse(localStorage.getItem("user"))||null)
     const login=async (values)=>{
      const res= await axios.post('http://localhost:8080/login',values)
+     if(res.data.Status==="Success")
      setCurrentUser(res.data.Data);
      return res;
     };

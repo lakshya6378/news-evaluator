@@ -8,6 +8,7 @@ import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import Logedin from './Pages/Logedin';
+import History from './Pages/History';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/logedin",
     element: <Logedin/>
+  },
+  {
+    path:"/history",
+    element:<History/>
   }
 ]);
 function App() {

@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import axios from 'axios';
+import './navbar.scss'
 const Links = ['Dashboard', 'Projects', 'Team'];
 
 const NavLink = ({ children }) => (
@@ -63,7 +64,7 @@ function Navbar() {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box className="navcontainer" px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -100,7 +101,7 @@ function Navbar() {
               {
             auth ?
             <>
-            <MenuItem>
+            <MenuItem onClick={()=>navigate('/history')}>
             History
             </MenuItem>
             <MenuItem onClick={logout}>Logout</MenuItem>

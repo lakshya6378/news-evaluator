@@ -8,6 +8,7 @@ function Register() {
       email:'',
       password:''
     })
+    const [error,seterror]=useState('')
     const navigate=useNavigate();
     const handlesubmit=(event)=>{
       event.preventDefault();
@@ -18,11 +19,16 @@ function Register() {
              navigate('/login')
         }else {
           alert("error");
+          seterror(res.data.Error);
+          setvalues({name:'',
+          email:'',
+          password:''});
         }
       })
       .then(err=>console.log(err))
     }
   return (
+    <div  className='container-register'>
     <div className='register-page'>
       <h1>Register</h1>
     <form onSubmit={handlesubmit}>
@@ -33,10 +39,12 @@ function Register() {
     onChange={(event)=>setvalues({...values,email:event.target.value})} required name='email'></input>
     <input type="password" placeholder='Password' value={values.password}
     onChange={(event)=>setvalues({...values,password:event.target.value})} required name='password'></input>
-    <span>already have an account <Link to='/login'>login</Link></span>
-    <p>this is a error message</p>
+    
+    <p>{error}</p>
     <button type='submit'>submit</button>
+    <span>already have an account <Link to='/login' className='loginnav'>login</Link></span>
 </form>
+</div>
 </div>
   )
 }

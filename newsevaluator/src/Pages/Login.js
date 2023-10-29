@@ -12,6 +12,7 @@ function Login() {
       const navigate=useNavigate();
       const {login,currentUser}=useContext(Authcontext);
       console.log(currentUser);
+      const [error,seterror]=useState("");
       axios.defaults.withCredentials=true;
       const handlesubmit= async (event)=>{
         event.preventDefault();
@@ -24,6 +25,8 @@ function Login() {
             navigate('/');
           } else {
             alert(res.data.Error);
+            seterror(res.data.Error);
+            setvalues({email:'',password:''});
           }
         } catch (error) {
           console.log(error);
@@ -31,6 +34,7 @@ function Login() {
       }
 
     return (
+      <div className='container-login'>
         <div className='login-page'>
             <h1>Login</h1>
             <form onSubmit={handlesubmit}className='login-form'>
@@ -51,10 +55,11 @@ function Login() {
                     onChange={(event) => setvalues({...values,password:event.target.value})}
                 />
                 <button type='submit' className='button'>Login</button>
-                <p>This is an error message</p>
-                <span>Don&apos;t have an account? <Link to='/register'>Register</Link></span>
+                <p>{error}</p>
+                <span>Don&apos;t have an account? <Link to='/register' className='registernav'>Register</Link></span>
             </form>
             
+        </div>
         </div>
     );
 }
