@@ -16,9 +16,8 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser())
-
+app.set("trust proxy", 1);
 app.use(express.urlencoded({extended: false}))
-app.use('/img', express.static('storage'))
 
 const port=8080;
 
@@ -105,7 +104,6 @@ app.post('/login',(req,res)=>{
                 if(err)
                 return res.json({Error:"password compare error"})
             if(response){
-                console.log(data)
                 const name=data[0].name;
                 const token=jwt.sign({name},"jwt-secret-key",{expiresIn:'1d'});
                 const {password,...other}=data[0];
