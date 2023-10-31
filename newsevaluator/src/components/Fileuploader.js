@@ -157,9 +157,9 @@ console.log(selectedFile);
 {
   data&&
   <>
-  <h2>upload another PDF or img?</h2>
-  <button onClick={()=>{setdata("")}}>go to upload section</button><br></br>
-  <span>result</span>
+  <h2 className="next-uploader">upload another PDF or img?</h2>
+  <button className="reupload-btn" onClick={()=>{setdata("")}}>go to upload section</button><br></br>
+  <span className='resultheading'>Result</span>
       <Dictionary data={data}></Dictionary>
   </>
 }

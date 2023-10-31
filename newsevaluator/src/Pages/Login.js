@@ -23,6 +23,8 @@ function Login() {
           if (res.data.Status === "Success") {
             console.log(res.data.Data)
             navigate('/');
+            window.location.reload(true);
+
           } else {
             alert(res.data.Error);
             seterror(res.data.Error);

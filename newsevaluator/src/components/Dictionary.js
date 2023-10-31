@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FcSpeaker } from 'react-icons/fc';
+import { FcSpeaker} from 'react-icons/fc';
+import {AiFillCloseCircle} from 'react-icons/ai';
 import './Dictionary.scss';
 import PropTypes from 'prop-types';
 
@@ -78,15 +79,19 @@ function Dictionary({ data }) {
       ))}
       {description!==''&&tooltipVisible && (
         <div className="custom-tooltip" style={{ top: tooltipPosition.top, left: tooltipPosition.left }}>
-          <button className="close-button" onClick={closeTooltip}>
-            Close
+          <div className="close-button" >
+          <span className='word'>{description.word}{' '}</span>
+          <button  onClick={closeTooltip}>
+          
+            <AiFillCloseCircle size="25px" className="close-icon"></AiFillCloseCircle>
           </button>
-          <h2>
-            {description.word}{' '}
+          </div>
+          <div className='pronun'>
+            <span className='tit'>Pronunciation</span> 
             <button onClick={() => playAudio()}>
               <FcSpeaker size="26px" />
             </button>
-          </h2>
+          </div>
           <h4>Parts of speech: </h4>
           <p>{description.meanings[0].partOfSpeech}</p>
           <h4>Definition:</h4>

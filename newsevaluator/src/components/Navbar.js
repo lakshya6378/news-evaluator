@@ -47,9 +47,11 @@ function Navbar() {
     //const [message,setmessage]=useState('');
     const [name,setname]=useState('');
     axios.defaults.withCredentials=true;
-    const {logout}=useContext(Authcontext)
-    useEffect(()=>{
-      axios.get(`${process.env.REACT_APP_BACKEND_URL}`)
+    const {logout}=useContext(Authcontext);
+    async function showauth()
+    {
+      console.log(localStorage.authtoken);
+      await axios.get(`${process.env.REACT_APP_BACKEND_URL}?token=${localStorage.authtoken}`)
       .then(res=>{
         if(res.data.Status==="Success"){
           setauth(true)
@@ -60,6 +62,9 @@ function Navbar() {
         }
       })
       .then(err=>console.log(err))
+    }
+    useEffect(()=>{
+      showauth();
   },[]);
 
   return (

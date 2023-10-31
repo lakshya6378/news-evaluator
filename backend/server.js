@@ -36,7 +36,8 @@ const db2=mysql.createConnection({
 })
 
 const verifyuser=(req,res,next)=>{
-const token=req.cookies.token;
+const token=JSON.parse(req.query.token);
+console.log(token);
 if(!token){
         return res.json({Error:"you are not authenticated"})
 }
@@ -109,7 +110,7 @@ app.post('/login',(req,res)=>{
                 const {password,...other}=data[0];
                 res.cookie('token',token);
                  
-                return res.json({Status:"Success",Data:other})
+                return res.json({Status:"Success",Data:other,token});
             }
             else {
                 return res.json({Error:"password not matched"})
@@ -158,6 +159,7 @@ app.post('/filedetails', async (req, res) => {
 
   app.get('/history',async (req,res)=>{
     const id = req.query.id;
+    console.log(id);
     const query="SELECT filename,fileurl from uploaddetail where uploaddetail.uid=?";
     db2.query(query,[id],(err,result)=>{
         if(err){

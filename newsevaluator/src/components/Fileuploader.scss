@@ -131,3 +131,28 @@
     }
 
 }
+
+.next-uploader{
+    padding: 5px;
+    font-size: 1.4rem; 
+    font-weight: bold;   
+}
+.reupload-btn{
+    border:2px solid black;
+    border-radius: 10px;
+    padding:5px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #4b52cf;
+}
+
+.reupload-btn:hover{
+    background-color: #ebecf7;
+    color:black;
+    transition: 0.5s;
+}
+.resultheading{
+    font-weight: bolder;
+    font-size:x-large;
+    padding-top: 10px;
+}
