@@ -6,6 +6,7 @@ export const Authcontext=createContext();
 export const AuthContextProvider=({children})=>{
     const [currentUser,setCurrentUser]=useState(JSON.parse(localStorage.getItem("user"))||null)
     const [token,settoken]=useState(JSON.parse(localStorage.getItem("authtoken"))||null)
+    const [extracttext,updateextracttext]=useState();
     const login=async (values)=>{
      const res= await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`,values)
      if(res.data.Status==="Success")
@@ -26,6 +27,11 @@ export const AuthContextProvider=({children})=>{
       
         window.location.reload(true);
       };
+
+      const updatetext=(text)=>{
+        console.log(extracttext);
+                  updateextracttext(text);
+      }
       
     
     useEffect(()=>{
@@ -33,7 +39,7 @@ export const AuthContextProvider=({children})=>{
         localStorage.setItem("user",JSON.stringify(currentUser))
         localStorage.setItem("authtoken",JSON.stringify(token))
     },[currentUser,token]);
-    return <Authcontext.Provider value={{currentUser,login,logout}}>{children}</Authcontext.Provider>
+    return <Authcontext.Provider value={{currentUser,login,logout,updatetext}}>{children}</Authcontext.Provider>
 }
 AuthContextProvider.propTypes={
     children:PropType.node.isRequired

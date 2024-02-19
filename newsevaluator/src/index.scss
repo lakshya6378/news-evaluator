@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  font-family:'Times New Roman', Times, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height:100vh;
+  background-color: #efe7e7;
+  
+}
+body.chakra-ui-light{
+  width: auto !important;
+}
+code {
+  font-family: Arial, Helvetica;
+}

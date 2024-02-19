@@ -37,7 +37,9 @@ function Dictionary({ data }) {
    // setHoveredWord(word);
 
     const { clientX, clientY } = event;
-    setTooltipPosition({ top: clientY, left: clientX });
+    const scrollOffset = window.scrollY;
+
+    setTooltipPosition({ top: clientY+scrollOffset, left: clientX });
 
     try {
       const meaning = await fetchMeaning(word);
@@ -62,7 +64,12 @@ function Dictionary({ data }) {
    // setHoveredWord('');
   };
 
-  const words = text.split(/[.,;:!?'"\-&%$#@*]+|\s/);
+  const words = text.split(/(\w+|\s+|\W)/);
+  console.log(words);
+  // const textWithMeanings = words.map((word, index) => 
+  // { const wordWithMeaning = { word, meaning: '' }; if (description && description.word === word) { wordWithMeaning.meaning = (
+  //   <div className="custom-tooltip" style={{ top: tooltipPosition.top, left: tooltipPosition.left }}>
+  //   <div className="close-button"> <span className='word'>{description.word}{' '}</span> <button onClick={closeTooltip}> <AiFillCloseCircle size="25px" className="close-icon"></AiFillCloseCircle> </button> </div> <div className='pronun'> <span className='tit'>Pronunciation</span> <button onClick={() => playAudio()}> <FcSpeaker size="26px" /></button> </div> <h4>Parts of speech: </h4> <p>{description.meanings[0].partOfSpeech}</p> <h4>Definition:</h4> <p>{description.meanings[0].definitions[0].definition}</p> <h4>Example:</h4> <p>{description.meanings[0].definitions[0].example}</p> </div> ); } return ( <span key={index}> {word} {wordWithMeaning.meaning} </span> ); });
   return (
     <div className="content-container">
       {words.map((word, index) => (
@@ -72,9 +79,9 @@ function Dictionary({ data }) {
             id={`word-${word}`}
             onDoubleClick={(e) => handleWordDoubleClick(word, e)}
           >
-            {word}{' '}
+            {word}
           </a>
-          &nbsp;
+          
         </span>
       ))}
       {description!==''&&tooltipVisible && (

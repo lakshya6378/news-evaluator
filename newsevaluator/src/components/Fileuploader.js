@@ -6,79 +6,113 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import {storage} from '../firebase';
 import { Authcontext } from '../context/Authcontext';
 import axios from 'axios';
+import OpenAI from 'openai';
+const openai = new OpenAI(
+  {
+      apiKey:`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`,
+      dangerouslyAllowBrowser: true,
+  }
+);
 function Fileuploader() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [dataUrl, setDataUrl] = useState(null);
+ // const [dataUrl, setDataUrl] = useState(null);
   const [data,setdata]=useState("");
   const [loading,setloading]=useState(false);
   const fileInputRef = useRef(null);
-  const {currentUser}=useContext(Authcontext);
+  const {currentUser,updatetext}=useContext(Authcontext);
   const [progress,setprogress]=useState(0);
-
+  const [summary,setsummary]=useState("");
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    console.log("selectedfile="+selectedFile);
   };
-console.log(selectedFile);
-  const PerformOcr=()=>{
-    if(selectedFile)
-    {
-      setloading(true);
-      if(currentUser)
-      {
-        const date=new Date().getTime();
-          const storageRef=ref(storage,`/files/${selectedFile.name}${date}`);
-          const uploadTask=uploadBytesResumable(storageRef,selectedFile);
-          uploadTask.on("state_changed",(snapshot)=>{
-            const prog=Math.round(snapshot.bytesTransferred/snapshot.totalBytes)*100;
-            setprogress(prog);
-          },(err)=>console.log(err),
-          ()=>{
-            getDownloadURL(uploadTask.snapshot.ref)
-            .then((url)=>{
-              const filedetail={
-                filename:selectedFile.name,
-                fileurl:url,
-                uid:currentUser.id
+  const PerformOcr = async () => {
+    try {
+      if (selectedFile) {
+        setloading(true);
+  
+        if (currentUser) {
+          const date = new Date().getTime();
+          const storageRef = ref(storage, `/files/${selectedFile.name}${date}`);
+          const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+  
+         await new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setprogress(prog);
+              },
+              reject,
+              async () => {
+                try {
+                  const url = await getDownloadURL(uploadTask.snapshot.ref);
+                  const filedetail = {
+                    filename: selectedFile.name,
+                    fileurl: url,
+                    uid: currentUser.id,
+                  };
+  
+                  const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/filedetails`, filedetail);
+  
+                  if (response.data.Status === "Success") {
+                    alert("Data uploaded successfully");
+                  } else {
+                    alert("Error");
+                  }
+  
+                  resolve();
+                } catch (err) {
+                  reject(err);
+                }
               }
-                axios.post(`${process.env.REACT_APP_BACKEND_URL}/filedetails`,filedetail)
-                .then((res)=>{
-                  if(res.data.Status==="Success")
-                  alert("data uploaded successfully");
-                else
-                alert("error");
-                })
-                .catch((err)=>alert(err))
-            });
-          })
+            );
+          });
+        }
+  
+        const api = "https://script.google.com/macros/s/AKfycbxTxk77TVNhMYcv1trBCwILLwVjeupZp2F6zqiBBfosF2CTPJ0PnwqhfU1hQuGvccRrxQ/exec";
+        const fr = new FileReader();
+  
+        const result=  await new Promise((resolve, reject) => {
+          fr.readAsDataURL(selectedFile);
+  
+          fr.onload = () => {
+            const res = fr.result;
+            // setDataUrl(res);
+            const b64 = res.split("base64,")[1];
+  
+            fetch(api, {
+              method: "POST",
+              body: JSON.stringify({
+                file: b64,
+                type: selectedFile.type,
+                name: selectedFile.name,
+              }),
+            })
+              .then((res) => res.text())
+              .then((data) => {
+                setdata(data);
+                updatetext(data);
+                setloading(false);
+                resolve(data);
+              })
+              .catch((err) => reject(err));
+          };
+        });
+        return result;
       }
-      let api="https://script.google.com/macros/s/AKfycbxTxk77TVNhMYcv1trBCwILLwVjeupZp2F6zqiBBfosF2CTPJ0PnwqhfU1hQuGvccRrxQ/exec";
-     let fr=new FileReader();
-     fr.readAsDataURL(selectedFile);
-     fr.onload=async ()=>{
-      const res=fr.result;
-      setDataUrl(res);
-      console.log(dataUrl);
-      let b64=res.split("base64,")[1];
-      console.log("base64 url "+b64);
-      await fetch(api,{
-        method:"POST",
-        body:JSON.stringify({
-          file:b64,
-          type:selectedFile.type,
-          name:selectedFile.name
-        })
-      })
-      .then(res=>res.text())
-      .then(data=>{
-           setdata(data);
-           console.log(data);
-           setloading(false);
-      })
-     }
+      else
+      {
+alert("please select a pdf file or image");
+      }
+    } catch (err) {
+      console.error(err);
+      setloading(false);
+      
     }
-    
-  }
+  };
+  
+  
   const clickFileInput=(event)=>{
     const x = event.clientX;
     const y = event.clientY;
@@ -110,6 +144,27 @@ console.log(selectedFile);
     fileInputRef.current.click();
 
   }
+  const getsummary = async () => {
+    if (selectedFile) {
+      try {
+        const extracttext = await PerformOcr();
+        setloading(true);
+        const prompt=`${extracttext} give the summary of this paragraph`
+       const completion = await openai.chat.completions.create({
+         messages: [{ role: "system", content: prompt }],
+         model: "gpt-3.5-turbo",
+       });
+ 
+       setsummary(completion.choices[0].message.content);
+       setloading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert("Please select a file");
+    }
+  };
+ 
   return (
     <>
     {!data&&!loading&&
@@ -117,7 +172,7 @@ console.log(selectedFile);
     className='Ocr' >
       <div className='headercontainer'>
         <img className='titleLogo' src=""></img>
-      <Heading  className="heading">AI NEWS GENRATOR</Heading>
+      <Heading  className="heading">AI NEWS GENERATOR</Heading>
       <p>Upload your article as Image or PDF for generate AI news</p>
       {
           selectedFile&&<div className='filename'>Selected file:{selectedFile.name}</div>
@@ -136,8 +191,11 @@ console.log(selectedFile);
         />
         </div>
         </div>
-  
-      <button className='btn' onClick={PerformOcr}>Create News</button>
+      <div>
+      <button className='btn' onClick={PerformOcr}>Create Text</button>
+      <button className="btn" onClick={getsummary}>Get Summary{summary}</button>
+      <button className="btn">Detail View</button>
+      </div>
      
     </div>
     }
@@ -158,9 +216,12 @@ console.log(selectedFile);
   data&&
   <>
   <h2 className="next-uploader">upload another PDF or img?</h2>
-  <button className="reupload-btn" onClick={()=>{setdata("")}}>go to upload section</button><br></br>
+  <button className="reupload-btn" onClick={()=>{setdata(""); updatetext(""); setsummary('');}}>go to upload section</button><br></br>
+  
   <span className='resultheading'>Result</span>
-      <Dictionary data={data}></Dictionary>
+  {   summary!==''&&<div>hello buddy{summary}</div>
+  }
+  <Dictionary data={data}></Dictionary>
   </>
 }
     <div className='color-line'></div>

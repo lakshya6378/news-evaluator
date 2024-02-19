@@ -1,7 +1,8 @@
 .numbered-circle-list {
     list-style-type: none; /* Remove default list style */
     padding: 0;
-    counter-reset: item 0; /* Reset the counter to 0 before the list */
+    counter-reset: item 0; 
+    /* Reset the counter to 0 before the list */
 }
 
 .numbered-circle-list .listitems {
