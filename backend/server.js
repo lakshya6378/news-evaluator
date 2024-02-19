@@ -5,12 +5,13 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import cookieParser from "cookie-parser";
 import axios from "axios";
+import OpenAI from "openai";
 
 
 const salt=10;
 const app=express();
 app.use(cors({
-    origin:'https://news-ai-front.onrender.com',
+    origin: 'http://localhost:3000',//'https://news-ai-front.onrender.com',
     methods:["POST","GET"],
     credentials:true
 }));
@@ -20,7 +21,11 @@ app.set("trust proxy", 1);
 app.use(express.urlencoded({extended: false}))
 
 const port=8080;
-
+const openai = new OpenAI(
+    {
+        apiKey:`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`,
+    }
+);
 const db=mysql.createConnection({
     host:"localhost",
     user:"root",
@@ -169,6 +174,17 @@ app.post('/filedetails', async (req, res) => {
             return res.json({Status:"Success",data:result});
         
     })
+  })
+  app.get('/summary',async(req,res)=>{
+    const text=req.body.params;
+    console.log("extracted text: ",text);
+    const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: `${text} give the summary of above paragraph` }],
+        model: "gpt-3.5-turbo",
+      });
+      console.log(completion.choices[0].message);
+      res.send({summary:completion.choices[0].message})
+
   })
 app.listen(port,()=>{
     console.log("server is running at https//localhost:8080");
