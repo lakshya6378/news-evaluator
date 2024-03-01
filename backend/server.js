@@ -188,13 +188,12 @@ app.post('/filedetails', async (req, res) => {
   })
 
   app.get('/search',async(req,res)=>{
-    const search=req.query.search;
+    const search=req.query.q;
     console.log(search);
     const url=`https://newsapi.org/v2/everything?q=${search}&apiKey=af96cd3905e346f08e7c37d50e88adfa`;
     try{
         const response=await axios.get(url);
         const data=response.data;
-        console.log(data);
         return res.json(data);
     }
     catch(error){
