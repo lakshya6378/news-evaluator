@@ -186,6 +186,21 @@ app.post('/filedetails', async (req, res) => {
       res.send({summary:completion.choices[0].message})
 
   })
+
+  app.get('/search',async(req,res)=>{
+    const search=req.query.search;
+    console.log(search);
+    const url=`https://newsapi.org/v2/everything?q=${search}&apiKey=af96cd3905e346f08e7c37d50e88adfa`;
+    try{
+        const response=await axios.get(url);
+        const data=response.data;
+        console.log(data);
+        return res.json(data);
+    }
+    catch(error){
+        res.json(error);
+    }
+  })
 app.listen(port,()=>{
     console.log("server is running at https//localhost:8080");
 })

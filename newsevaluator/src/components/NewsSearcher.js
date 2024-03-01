@@ -17,11 +17,10 @@ const loadMore = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.get(`https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=af96cd3905e346f08e7c37d50e88adfa`, {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/search?q=${encodeURIComponent(searchTerm)}`, {
         withCredentials: false,
-        "Access-Control-Allow-Origin": "*",
-        Connection: 'upgrade',
-        Upgrade: ['HTTP/2.0', 'SHTTP/1.3', 'IRC/6.9', 'RTA/x11']
+        "Access-Control-Allow-Origin": "*"
+
       });
       setNewsArticles(response.data.articles);
       setshowresult(true);
