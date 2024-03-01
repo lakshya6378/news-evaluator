@@ -1,0 +1,63 @@
+.button{
+  display: inline-block;
+      padding: 12px 30px;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #4b52cf;
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffffff;
+      text-transform: uppercase;
+}
+.btn{
+  padding:10px;
+  border:1px solid black;
+  border-radius:10px;
+  background-color: #4b52cf;
+  color:white;
+  margin-top:30px;
+  box-shadow:0px 0px 2px 4px #c7c6c4;
+  margin-right: 8px;
+}
+.card-container{
+  display:flex;
+  justify-content: center;
+  flex-wrap:wrap;
+  margin-top:50px;
+}
+.load-more {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 100%;
+}
+.clear-button {
+  background-color: transparent;
+  border: 2px solid #000;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #000;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  width: 60%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #000;
+    color: #fff;
+  }
+}

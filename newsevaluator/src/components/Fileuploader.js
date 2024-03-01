@@ -9,7 +9,7 @@ import axios from 'axios';
 import OpenAI from 'openai';
 const openai = new OpenAI(
   {
-      apiKey:`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`,
+      apiKey:process.env.REACT_APP_OPENAI_KEY,
       dangerouslyAllowBrowser: true,
   }
 );
@@ -25,6 +25,7 @@ function Fileuploader() {
   
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
+    console.log(event.target.files[0]);
   };
   const PerformOcr = async () => {
     try {

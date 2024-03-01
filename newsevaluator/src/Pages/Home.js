@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import Instructions from '../components/Instructions';
 import Tutorials from '../components/Tutorials';
 import NewsSearcher from '../components/NewsSearcher';
+import ImageNewsseacher from '../components/ImageNewsseacher';
 function Home() {
   // const [auth,setauth]=useState(false);
   //    const [message,setmessage]=useState('');
@@ -45,8 +46,11 @@ function Home() {
                 <Link to='/login'>Login</Link>
             </div>
         } */}
-        <Fileuploader/>
+        <div className=" search-bar-container">
         <NewsSearcher/>
+        <ImageNewsseacher/> 
+        </div>
+        <Fileuploader/> 
         <Instructions/>
         <Tutorials/>
     </div>

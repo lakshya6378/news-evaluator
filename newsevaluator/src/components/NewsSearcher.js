@@ -1,29 +1,75 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './newssearcher.scss';
-import { Heading } from '@chakra-ui/react';
+import Card from './Card';
 
-function NewsSearcher() {
-  const [searchText,setSearchText]=useState('');
-  const HandleChange=(event)=>{
-    setSearchText(event.target.value);
-  }
-    
+
+const NewsSearcher = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [newsArticles, setNewsArticles] = useState([]);
+  const [visible, setVisible] = useState(10); // initially show 8 articles
+  const[showresult,setshowresult]=useState(false);
+
+const loadMore = () => {
+  setVisible((prevValue) => prevValue + 5); // load 4 more articles
+};
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await axios.get(`https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=af96cd3905e346f08e7c37d50e88adfa`, {
+        withCredentials: false,
+        "Access-Control-Allow-Origin": "*"
+      });
+      setNewsArticles(response.data.articles);
+      setshowresult(true);
+    } catch (error) {
+      console.error('Error fetching news articles:', error);
+    }
+  };
+
   return (
     <>
-    <Heading>Search Latest News</Heading>
-    <div className='SearchContainer'>
-      <div className='input-Container'>
-      <input type={'text'} value={searchText} onChange={HandleChange}/>
-      <div className='search-icon'>
-        <img src=''></img>
+    <div className="news-searcher">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Search for news articles..."
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          className="search-input"
+        />
+        <button type="submit" className="search-button">Search</button>
+      </form>
+      {
+        showresult && newsArticles.length === 0 && <h2>No articles found</h2>
+      }
+      {
+        showresult && <button className="clear-button" onClick={() =>{setshowresult(false);
+          setNewsArticles([]);
+          setSearchTerm('');
+        }}>Clear</button>
+      }
+      <div className="card-container">
+        {newsArticles.slice(0,visible).map((article,index) => (
+          <Card
+            key={index}
+            title={article.title}
+            description={article.description}
+            url={article.url}
+            image={article.urlToImage}
+            date={article.publishedAt}
+          />
+        ))}
+        
       </div>
-      </div>
-       
+      {visible < newsArticles.length && 
+      <button onClick={loadMore} className="load-more">Load More</button>
+    }
     </div>
-    <div className="color-line"></div>
+    
     </>
-  )
-}
+  );
+};
 
-export default NewsSearcher
+export default NewsSearcher;
