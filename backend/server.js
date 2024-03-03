@@ -11,7 +11,7 @@ import OpenAI from "openai";
 const salt=10;
 const app=express();
 app.use(cors({
-    origin: 'https://news-ai-front.onrender.com',
+    origin:'https://news-ai-front.onrender.com',
     methods:["POST","GET"],
     credentials:true
 }));
@@ -139,7 +139,6 @@ app.get('/description',async (req,res)=>{
     try{
         const response=await axios.get(url);
         const data=response.data;
-        console.log(data);
         return res.json(data);
         
     }
@@ -164,7 +163,6 @@ app.post('/filedetails', async (req, res) => {
 
   app.get('/history',async (req,res)=>{
     const id = req.query.id;
-    console.log(id);
     const query="SELECT filename,fileurl from uploaddetail where uploaddetail.uid=?";
     db2.query(query,[id],(err,result)=>{
         if(err){
@@ -177,19 +175,16 @@ app.post('/filedetails', async (req, res) => {
   })
   app.get('/summary',async(req,res)=>{
     const text=req.body.params;
-    console.log("extracted text: ",text);
     const completion = await openai.chat.completions.create({
         messages: [{ role: "system", content: `${text} give the summary of above paragraph` }],
         model: "gpt-3.5-turbo",
       });
-      console.log(completion.choices[0].message);
       res.send({summary:completion.choices[0].message})
 
   })
 
   app.get('/search',async(req,res)=>{
     const search=req.query.q;
-    console.log(search);
     const url=`https://newsapi.org/v2/everything?q=${search}&apiKey=af96cd3905e346f08e7c37d50e88adfa`;
     try{
         const response=await axios.get(url);

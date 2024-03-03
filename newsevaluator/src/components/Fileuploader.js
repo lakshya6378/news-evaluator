@@ -20,17 +20,17 @@ function Fileuploader() {
   const [loading,setloading]=useState(false);
   const fileInputRef = useRef(null);
   const {currentUser,updatetext}=useContext(Authcontext);
-  const [progress,setprogress]=useState(0);
   const [summary,setsummary]=useState("");
+  const [textvisible,settextvisible]=useState(false);
   
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    console.log(event.target.files[0]);
   };
   const PerformOcr = async () => {
     try {
       if (selectedFile) {
         setloading(true);
+        settextvisible(true);
   
         if (currentUser) {
           const date = new Date().getTime();
@@ -41,8 +41,8 @@ function Fileuploader() {
             uploadTask.on(
               "state_changed",
               (snapshot) => {
+                /* eslint-disable */
                 const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setprogress(prog);
               },
               reject,
               async () => {
@@ -150,6 +150,7 @@ alert("please select a pdf file or image");
       try {
         const extracttext = await PerformOcr();
         setloading(true);
+        settextvisible(false);
         const prompt=`${extracttext} give the summary of this paragraph`
        const completion = await openai.chat.completions.create({
          messages: [{ role: "system", content: prompt }],
@@ -195,7 +196,6 @@ alert("please select a pdf file or image");
       <div>
       <button className='btn' onClick={PerformOcr}>Create Text</button>
       <button className="btn" onClick={getsummary}>Get Summary{summary}</button>
-      <button className="btn">Detail View</button>
       </div>
      
     </div>
@@ -210,7 +210,6 @@ alert("please select a pdf file or image");
         </circle>
         </svg>
         </div>
-      <div>uploaded {progress}%</div>
       </>
 }
 {
@@ -220,9 +219,14 @@ alert("please select a pdf file or image");
   <button className="reupload-btn" onClick={()=>{setdata(""); updatetext(""); setsummary('');}}>go to upload section</button><br></br>
   
   <span className='resultheading'>Result</span>
-  {   summary!==''&&<div>hello buddy{summary}</div>
+  {   summary!==''&&<div className="summary-container" style={{width:'80%',textAlign:'center',backgroundColor:'white',minHeight:'200px',fontSize:'16px',margin:'auto', padding:'10px 2%'}}>
+    <h2>SUMMARY</h2>
+    <div>
+    {summary}
+    </div>
+    </div>
   }
-  <Dictionary data={data}></Dictionary>
+ { textvisible && <Dictionary data={data}></Dictionary>}
   </>
 }
     <div className='color-line'></div>

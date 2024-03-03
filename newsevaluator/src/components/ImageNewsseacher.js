@@ -13,12 +13,12 @@ function ImageNewsseacher() {
   const [scannerVisible, setScannerVisible] = useState(false);
   const [imgSrc,setImgsrc]=useState(null);
   const {currentUser}=useContext(Authcontext);
-  const [progress,setprogress]=useState(0);
   const [text,settext]=useState("");
   const [keywords,setkeywords]=useState("");
   const [newsArticles, setNewsArticles] = useState([]);
   const [visible, setVisible] = useState(10); // initially show 8 articles
   const[showresult,setshowresult]=useState(false);
+  const [capturedImageVisible, setCapturedImageVisible] = useState(true);
   const openai = new OpenAI(
     {
         apiKey:process.env.REACT_APP_OPENAI_KEY,
@@ -29,10 +29,12 @@ function ImageNewsseacher() {
   const capture=useCallback(()=>{
     const imageSrc = webcamRef.current.getScreenshot();
     setImgsrc(imageSrc);
+    setCapturedImageVisible(true);
   },[webcamRef])
 
   const retake = () => {
     setImgsrc(null);
+    setCapturedImageVisible(false);
   };
 
   const dataURItoBlob = (dataURI) => {
@@ -50,6 +52,15 @@ function ImageNewsseacher() {
 
   const loadMore = () => {
     setVisible((prevValue) => prevValue + 5); // load 4 more articles
+  };
+
+  const clearResults = () => {
+    setNewsArticles([]);
+    setImgsrc(null);
+    setshowresult(false);
+    setCapturedImageVisible(false);
+    setkeywords("");
+    settext("");
   };
   
   const getKeywords=async (data)=>{
@@ -83,7 +94,7 @@ function ImageNewsseacher() {
     const encodedQuery = encodeURIComponent(queryString);
     console.log(encodedQuery);
     try {
-      const response = await axios.get(`https://newsapi.org/v2/everything?q=${encodedQuery}&apiKey=af96cd3905e346f08e7c37d50e88adfa`, {
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/search?q=${encodedQuery}`, {
         withCredentials: false,
         "Access-Control-Allow-Origin": "*"
       });
@@ -156,8 +167,9 @@ function ImageNewsseacher() {
           uploadTask.on(
             "state_changed",
             (snapshot) => {
+              /* eslint-disable */
               const prog = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-              setprogress(prog);
+
             },
             reject,
             async () => {
@@ -197,61 +209,77 @@ function ImageNewsseacher() {
     }
   }
 
+  const getCameraFacingMode = () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          const backCamera = devices.find(device => device.kind === 'videoinput' && device.label.includes('back'));
+          return backCamera ? 'environment' : 'user';
+        })
+        .catch(error => {
+          console.error('Error enumerating devices:', error);
+          return 'user'; // Default to front camera if an error occurs
+        });
+    } else {
+      return 'user'; // Default to front camera if mediaDevices API is not supported
+    }
+  };
+
   return (
     <>
-    {!scannerVisible&&
-    <button className='image search btn' onClick={()=>{setScannerVisible(true)}}>
-      search by image
-    </button>
-   }
-   {
-    scannerVisible&&
-    <div className='image search'>
-      {
-        imgSrc ? (
-          <>
-          <img src={imgSrc} alt="webcam" style={{borderRadius:"10px",margin:"auto"}}/>
-          </>
-        ) :(
-          <>
-          <button className='close btn' onClick={()=>{setScannerVisible(false)}}>
-        close
-      </button>
-       <Webcam
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        height={'90%'} width={'95%'}
-        style={{borderRadius:'10px',border:'2px solid black',margin:'auto'}}
-
-      />
-     
-      </>
-        )
-     }
-      <div className="btn-container">
-      {imgSrc ? (
-        <div className="photoSelector">
-          <button className='btn'onClick={retake}>Retake photo</button>
-          <button className='btn'onClick={generateNews}>select photo</button>
+      {!scannerVisible && (
+        <button className="search btn" onClick={() => setScannerVisible(true)}>
+          search by image
+        </button>
+      )}
+      {scannerVisible && (
+        <div className="image search">
+          {capturedImageVisible && imgSrc ? (
+            <>
+              <img src={imgSrc} alt="webcam" style={{ borderRadius: '10px', margin: 'auto' }} />
+            </>
+          ) : (
+            <>
+              <button className="close btn" onClick={() => setScannerVisible(false)}>
+                close
+              </button>
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                height={'70vh'}
+                width={'95%'}
+                style={{ borderRadius: '10px', border: '2px solid black', margin: '10px auto' }}
+                facingMode={getCameraFacingMode()}
+              />
+            </>
+          )}
+          <div className="btn-container">
+            {capturedImageVisible && imgSrc ? (
+              <div className="photoSelector">
+                <button className="btn" onClick={retake}>
+                  Retake photo
+                </button>
+                <button className="btn" onClick={generateNews}>
+                  select photo
+                </button>
+              </div>
+            ) : (
+              <button className="btn" onClick={capture}>
+                Capture photo
+              </button>
+            )}
           </div>
-        ) : (
-          <button className='btn' onClick={capture}>Capture photo</button>
-        )}
-      </div>
-      </div>
-   }
-     {
-        showresult && newsArticles.length === 0 && <h2>No articles found</h2>
-      }
-      {
-        showresult && <button className="clear-button" onClick={() =>{setshowresult(false);
-          setNewsArticles([]);
-  
-        }}>Clear</button>
-      }
+        </div>
+      )}
+      {showresult && newsArticles.length === 0 && <h2>No articles found</h2>}
+      {showresult && (
+        <button className="clear-button" onClick={clearResults}>
+          Clear
+        </button>
+      )}
       <div className="card-container">
-        {newsArticles.slice(0,visible).map((article,index) => (
+        {newsArticles.slice(0, visible).map((article, index) => (
           <Card
             key={index}
             title={article.title}
@@ -261,14 +289,14 @@ function ImageNewsseacher() {
             date={article.publishedAt}
           />
         ))}
-        
       </div>
-      {visible < newsArticles.length && 
-      <button onClick={loadMore} className="load-more">Load More</button>
-    }
-   <div>{progress}</div>
-    <div className='color-line'></div>
+      {visible < newsArticles.length && (
+        <button onClick={loadMore} className="load-more">
+          Load More
+        </button>
+      )}
     </>
+
   )
 }
 

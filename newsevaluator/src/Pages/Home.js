@@ -46,10 +46,11 @@ function Home() {
                 <Link to='/login'>Login</Link>
             </div>
         } */}
-        <div className=" search-bar-container">
+        <div className=" search-bar-container" style={{display:'flex',flexDirection:'column',gap:'4px',alignItems:'center',justifyContent:'center'}}>
         <NewsSearcher/>
         <ImageNewsseacher/> 
         </div>
+        <div className='color-line'></div>
         <Fileuploader/> 
         <Instructions/>
         <Tutorials/>
