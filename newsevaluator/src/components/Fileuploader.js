@@ -71,7 +71,7 @@ function Fileuploader() {
           });
         }
   
-        const api = "https://script.google.com/macros/s/AKfycbxTxk77TVNhMYcv1trBCwILLwVjeupZp2F6zqiBBfosF2CTPJ0PnwqhfU1hQuGvccRrxQ/exec";
+        const api = "https://script.google.com/macros/s/AKfycbzwfQMzdyvneh6DgBCMkRyBaoGKACdt4ERP6KoSqfiV6aDJH3p4scW2pXGTmCrdQlA-SA/exec";
         const fr = new FileReader();
   
         const result=  await new Promise((resolve, reject) => {
