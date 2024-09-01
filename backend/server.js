@@ -11,7 +11,7 @@ const salt = 10;
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000', //'https://news-ai-front.onrender.com',
+    origin: 'https://news-ai-front.onrender.com',
     methods: ["POST", "GET"],
     credentials: true
 }));
